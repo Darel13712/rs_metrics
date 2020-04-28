@@ -1,0 +1,31 @@
+site_name: rs_metrics
+
+repo_name: 'GitHub'
+repo_url: 'https://github.com/Darel13712/rs_metrics'
+
+theme:
+  name: 'material'
+  palette:
+    primary: 'blue'
+    accent: 'light-blue'
+  font:
+    text: 'Roboto'
+    code: 'Menlo'
+  logo:
+    icon: 'assessment'
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes
+  - pymdownx.arithmatex
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+
+extra:
+  social:
+    - type: 'github'
+      link: 'https://github.com/Darel13712/rs_metrics'
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML
