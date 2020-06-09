@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="rs_metrics",
-    version="0.1.0",
+    version="0.1.1",
     author="Darel",
     author_email="darel142857@gmail.com",
     description="Metrics for recommender systems",
