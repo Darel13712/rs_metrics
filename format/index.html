@@ -299,8 +299,10 @@
 </code></pre></div>
 
 </div>
-<p>If you have recommendations in <code class="codehilite"><span class="err">pandas.DataFrame</span></code>, you can convert them to this format with</p>
-<div class="codehilite"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;user_id&#39;</span><span class="p">)[</span><span class="s1">&#39;item_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<p>If you have recommendations in <code class="codehilite"><span class="err">pandas.DataFrame</span></code>, you can convert them to this format using 
+<code class="codehilite"><span class="err">rs_metrics.pandas_to_dict</span></code></p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">pandas_to_dict</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">user_col</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">item_col</span><span class="o">=</span><span class="s1">&#39;item_id&#39;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">user_col</span><span class="p">)[</span><span class="n">item_col</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 </code></pre></div>
                 
                   
