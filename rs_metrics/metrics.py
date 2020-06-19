@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from rs_metrics.parallel import user_mean, unique_items
+from rs_metrics.parallel import user_mean, top_items
 
 
 def _dcg_score(data):
@@ -84,10 +84,6 @@ def mar(true, pred, k=10):
     return user_mean(_mar, true, pred, k)
 
 
-def item_pop(log, user_col='user_id', item_col='item_id'):
-    return log.groupby(item_col)[user_col].nunique().sort_values(ascending=False)
-
-
 def coverage(items, recs, k=None):
     """What percentage of items appears in recommendations?
 
@@ -98,5 +94,5 @@ def coverage(items, recs, k=None):
 
     Returns: float
     """
-    topk = unique_items(recs, k)
+    topk = set(top_items(recs, k))
     return pd.Series(items).isin(topk).mean()
