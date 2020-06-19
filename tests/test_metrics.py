@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from rs_metrics.metrics import _dcg_score
+from rs_metrics.metrics import _dcg_score, coverage
 from rs_metrics import *
 
 
@@ -9,7 +9,6 @@ from rs_metrics import *
 def inner_dict():
     def func(pred, true):
         return {'pred': pred, 'true': true}
-
     return func
 
 
@@ -65,3 +64,9 @@ def test_mar():
     y_true = {1: [1, 2], 2: [1, 2]}
     y_pred = {1: [1, 3], 2: [0, 1]}
     assert mar(y_true, y_pred, 2) == 0.25
+
+
+def test_coverage():
+    items = [1, 2, 3, 4]
+    pred = {1: [1, 2], 2: [2, 5]}
+    assert coverage(items, pred) == 0.5

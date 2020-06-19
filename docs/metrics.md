@@ -105,3 +105,25 @@ This value is averaged across all users.
 `#!py def mrr(true, pred, k=10):`
 
 Mean Reciprocal Rank shows inverted position of the first relevant item, on average.
+
+## Other
+
+### Coverage
+
+Shows what percentage of items from log appears in recommendations.
+
+`#!py def coverage(items, recs, k=None):`
+
+- `items`:
+    list of unique item ids.
+    
+    If recommendations contain new items, not from `items`, metric won't be correct.
+    
+- `recs`:
+    standard user-items dictionary
+    
+- `k`:
+    pass specific k to limit the amount of visible recommendations for each user.
+
+    
+    
