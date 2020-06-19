@@ -347,6 +347,26 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#other" class="md-nav__link">
+    Other
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#coverage" class="md-nav__link">
+    Coverage
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -444,6 +464,26 @@
           <li class="md-nav__item">
   <a href="#mrr" class="md-nav__link">
     MRR
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other" class="md-nav__link">
+    Other
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#coverage" class="md-nav__link">
+    Coverage
   </a>
   
 </li>
@@ -597,6 +637,25 @@ simple binary variant is usually used:</p>
 <h3 id="mrr">MRR</h3>
 <p><code class="codehilite"><span class="k">def</span> <span class="nf">mrr</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span></code></p>
 <p>Mean Reciprocal Rank shows inverted position of the first relevant item, on average.</p>
+<h2 id="other">Other</h2>
+<h3 id="coverage">Coverage</h3>
+<p>Shows what percentage of items from log appears in recommendations.</p>
+<p><code class="codehilite"><span class="k">def</span> <span class="nf">coverage</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">recs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span></code></p>
+<ul>
+<li>
+<p><code class="codehilite"><span class="err">items</span></code>:
+    list of unique item ids.</p>
+<p>If recommendations contain new items, not from <code class="codehilite"><span class="err">items</span></code>, metric won't be correct.</p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">recs</span></code>:
+    standard user-items dictionary</p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">k</span></code>:
+    pass specific k to limit the amount of visible recommendations for each user.</p>
+</li>
+</ul>
                 
                   
                 
