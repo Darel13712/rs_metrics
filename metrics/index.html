@@ -362,6 +362,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#popularity" class="md-nav__link">
+    Popularity
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#surprisal" class="md-nav__link">
+    Surprisal
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -484,6 +498,20 @@
           <li class="md-nav__item">
   <a href="#coverage" class="md-nav__link">
     Coverage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#popularity" class="md-nav__link">
+    Popularity
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#surprisal" class="md-nav__link">
+    Surprisal
   </a>
   
 </li>
@@ -654,6 +682,69 @@ simple binary variant is usually used:</p>
 <li>
 <p><code class="codehilite"><span class="err">k</span></code>:
     pass specific k to limit the amount of visible recommendations for each user.</p>
+</li>
+</ul>
+<h3 id="popularity">Popularity</h3>
+<p>Shows mean popularity of recommendations.</p>
+<p>Scores for items are averaged per recommendation list and globally.</p>
+<p><code class="codehilite"><span class="k">def</span> <span class="nf">popularity</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">user_col</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">item_col</span><span class="o">=</span><span class="s1">&#39;item_id&#39;</span><span class="p">):</span></code></p>
+<ul>
+<li>
+<p><code class="codehilite"><span class="err">log</span></code>: 
+    pandas DataFrame with interactions</p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">pred</span></code>: 
+    dict of recommendations</p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">k</span></code>: 
+    top k items to use from recs</p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">user_col</span></code>: 
+    column name for user ids</p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">item_col</span></code>:
+    column name for item ids</p>
+</li>
+</ul>
+<h3 id="surprisal">Surprisal</h3>
+<p>Measures unexpectedness of recommendations. </p>
+<p>Let <span><span class="MathJax_Preview">p_k</span><script type="math/tex">p_k</script></span> be popularity of item <span><span class="MathJax_Preview">k, p_k \in [0, 1]</span><script type="math/tex">k, p_k \in [0, 1]</script></span>. 
+Then we can introduce self-information for item <span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> as</p>
+<div>
+<div class="MathJax_Preview">
+    I_k = -log_2(p_k)
+</div>
+<script type="math/tex; mode=display">
+    I_k = -log_2(p_k)
+</script>
+</div>
+<p>We calculate mean self-information for items in recommendation for each user and average it for all users.</p>
+<p>In a way it is opposite to the popularity metric.</p>
+<p><code class="codehilite"><span class="k">def</span> <span class="nf">surprisal</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">user_col</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">item_col</span><span class="o">=</span><span class="s1">&#39;item_id&#39;</span><span class="p">):</span></code></p>
+<ul>
+<li>
+<p><code class="codehilite"><span class="err">log</span></code>: 
+    pandas DataFrame with interactions</p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">pred</span></code>: 
+    dict of recommendations</p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">k</span></code>: 
+    top k items to use from recs</p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">user_col</span></code>: 
+    column name for user ids</p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">item_col</span></code>:
+    column name for item ids</p>
 </li>
 </ul>
                 
