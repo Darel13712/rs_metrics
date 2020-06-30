@@ -126,4 +126,57 @@ Shows what percentage of items from log appears in recommendations.
     pass specific k to limit the amount of visible recommendations for each user.
 
     
+### Popularity
+
+Shows mean popularity of recommendations.
+ 
+Scores for items are averaged per recommendation list and globally.
+
+`#!py def popularity(log, pred, k=10, user_col='user_id', item_col='item_id'):`
+
+- `log`: 
+    pandas DataFrame with interactions
     
+- `pred`: 
+    dict of recommendations
+    
+- `k`: 
+    top k items to use from recs
+
+- `user_col`: 
+    column name for user ids
+
+- `item_col`:
+    column name for item ids
+
+### Surprisal
+
+Measures unexpectedness of recommendations. 
+
+Let $p_k$ be popularity of item $k, p_k \in [0, 1]$. 
+Then we can introduce self-information for item $k$ as
+
+$$
+    I_k = -log_2(p_k)
+$$
+
+We calculate mean self-information for items in recommendation for each user and average it for all users.
+
+In a way it is opposite to the popularity metric.
+
+`#!py def surprisal(log, pred, k=10, user_col='user_id', item_col='item_id'):`
+
+- `log`: 
+    pandas DataFrame with interactions
+    
+- `pred`: 
+    dict of recommendations
+    
+- `k`: 
+    top k items to use from recs
+
+- `user_col`: 
+    column name for user ids
+
+- `item_col`:
+    column name for item ids

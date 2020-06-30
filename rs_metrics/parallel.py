@@ -1,8 +1,6 @@
 from multiprocessing import Pool, cpu_count
 import numpy as np
 
-from rs_metrics.helpers import flatten_list
-
 
 def user_mean(func, true, pred, k):
     y = {
@@ -17,10 +15,16 @@ def user_mean(func, true, pred, k):
         return np.mean(p.map(func, [data for user, data in y.items()]))
 
 
-def top_items(pred, k):
+def user_apply(func, df, pred, k, fill):
+    pred = top_k(pred, k)
     with Pool(cpu_count()) as p:
-        topk = p.starmap(get_k, [(data, k) for user, data in pred.items()])
-        return flatten_list(topk)
+        return np.mean(p.starmap(func, [(df, data, fill) for user, data in pred.items()]))
+
+
+def top_k(pred, k):
+    with Pool(cpu_count()) as p:
+        top_items = p.starmap(get_k, [(data, k) for user, data in pred.items()])
+        return {user: top for user, top in zip(pred, top_items)}
 
 
 def get_k(l, k):

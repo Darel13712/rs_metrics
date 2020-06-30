@@ -1,8 +1,10 @@
 import numpy as np
+import pandas as pd
 import pytest
 
-from rs_metrics.metrics import _dcg_score, coverage
+from rs_metrics.metrics import _dcg_score
 from rs_metrics import *
+from rs_metrics.statistics import item_pop
 
 
 @pytest.fixture
@@ -70,3 +72,24 @@ def test_coverage():
     items = [1, 2, 3, 4]
     pred = {1: [1, 2], 2: [2, 5]}
     assert coverage(items, pred) == 0.5
+
+
+@pytest.fixture
+def log():
+    return pd.DataFrame({'user_id':[1, 1, 2], 'item_id': [1, 2, 2]})
+
+
+def test_item_pop(log):
+    pops = item_pop(log)
+    assert sum(pops) == 1.5
+
+
+def test_popularity(log):
+    pred = {1: [2], 2: [1]}
+    assert popularity(log, pred, 2) == 0.75
+
+
+def test_surprisal():
+    df = pd.DataFrame({'user_id':[1, 2], 'item_id': [1, 2]})
+    pred = {1: [2], 2: [1]}
+    assert surprisal(df, pred, 2) == 1

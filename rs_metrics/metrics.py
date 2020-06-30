@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
-from rs_metrics.parallel import user_mean, top_items
+
+from rs_metrics.helpers import flatten_list
+from rs_metrics.parallel import user_mean, top_k, user_apply
+from rs_metrics.statistics import item_pop
 
 
 def _dcg_score(data):
@@ -94,5 +97,31 @@ def coverage(items, recs, k=None):
 
     Returns: float
     """
-    topk = set(top_items(recs, k))
+    topk = set(flatten_list(top_k(recs, k).values()))
     return pd.Series(items).isin(topk).mean()
+
+
+def _popularity(df, pred, fill):
+    return np.mean([df.get(item, fill) for item in pred])
+
+
+def popularity(log, pred, k=10, user_col='user_id', item_col='item_id'):
+    """
+    Mean popularity of recommendations.
+
+    Args:
+        log: pandas DataFrame with interactions
+        pred: dict of recommendations
+        k: top k items to use from recs
+        user_col: column name for user ids
+        item_col: column name for item ids
+
+    """
+    scores = item_pop(log, user_col, item_col)
+    return user_apply(_popularity, scores, pred, k, 0)
+
+
+def surprisal(log, pred, k=10, user_col='user_id', item_col='item_id'):
+    scores = -np.log2(item_pop(log, user_col, item_col))
+    fill = np.log2(log[user_col].nunique())
+    return user_apply(_popularity, scores, pred, k, fill)
