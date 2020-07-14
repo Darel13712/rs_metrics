@@ -106,6 +106,41 @@ This value is averaged across all users.
 
 Mean Reciprocal Rank shows inverted position of the first relevant item, on average.
 
+## Diversity
+
+### α-NDCG
+
+`#!py def a_ndcg(true, pred, aspects, k=10, alpha=0.5):`
+
+- `aspects`: 
+    dictionary which maps users to aspect list containing items for each aspect.
+    
+    Example: `#!py {1: [{1, 2, 3}, {3, 4}], 2: [{1}]}`
+    
+
+- `alpha` $\in [0,1]$:
+   controls redundancy penalty. 
+   The bigger the number the more metric penalizes items from the same aspect.
+   
+$α\text{-}NDCG$ is based on $NDCG$ but it is aspect and redundancy-aware, 
+which makes it a measure of diversity:
+
+$$
+    \alpha \text{-}DCG@k=\sum_{i=1}^k \frac{1}{log_2(i + 1)}
+    \sum_{a \in \mathcal{A}} rel(i|a) \prod_{j < i}(1-\alpha rel(j|a))
+$$
+
+$$
+    \alpha \text{-}NDCG@k = \frac{\alpha \text{-}DCG@k} {\alpha \text{-}IDCG@k}
+$$
+
+- $a \in A$ are aspects of items i.e. features or subprofiles
+- $rel(i|a)$ equals 1 if item at position $i$ is relevant and has aspect $a$ and 0 otherwise
+- $\alpha \text{-}IDCG@k = \max(\alpha \text{-}DCG@k)$
+
+
+
+
 ## Other
 
 ### Coverage

@@ -15,10 +15,26 @@ def user_mean(func, true, pred, k):
         return np.mean(p.map(func, [data for user, data in y.items()]))
 
 
+def user_mean_sub(func, true, pred, subprofiles, k, aplha):
+    pred = top_k(pred, k)
+    with Pool(cpu_count()) as p:
+        return np.mean(
+            p.starmap(
+                func,
+                [
+                    (true[user], pred.get(user, list())[:k], subprofiles[user], aplha)
+                    for user in true
+                ],
+            )
+        )
+
+
 def user_apply(func, df, pred, k, fill):
     pred = top_k(pred, k)
     with Pool(cpu_count()) as p:
-        return np.mean(p.starmap(func, [(df, data, fill) for user, data in pred.items()]))
+        return np.mean(
+            p.starmap(func, [(df, data, fill) for user, data in pred.items()])
+        )
 
 
 def top_k(pred, k):

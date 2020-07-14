@@ -2,14 +2,13 @@ import numpy as np
 import pandas as pd
 
 from rs_metrics.helpers import flatten_list
-from rs_metrics.parallel import user_mean, top_k, user_apply
+from rs_metrics.parallel import user_mean, top_k, user_apply, user_mean_sub
 from rs_metrics.statistics import item_pop
 
 
 def _dcg_score(data):
-    y = pd.Series(data['pred']).isin(data['true']).astype(int)
-    gain = 2 ** y - 1
-    discounts = np.log2(np.arange(len(y)) + 2)
+    gain = pd.Series(data['pred']).isin(data['true']).astype(int)
+    discounts = np.log2(np.arange(len(gain)) + 2)
     return np.sum(gain / discounts)
 
 
@@ -18,6 +17,36 @@ def ndcg(true, pred, k=10):
     score = user_mean(_dcg_score, true, pred, k)
     idcg = np.sum(np.ones(k) / np.log2(np.arange(k) + 2))
     return score / idcg
+
+
+def _a_ndcg(true, pred, aspects, alpha):
+    p = pd.Series(pred)
+    penalty = 1 - alpha
+    dcg = 0
+    hits = p.isin(true).astype(int)
+    num_aspects = len(aspects)
+    k = len(pred)
+
+    fit = k // num_aspects
+    extra = k % num_aspects
+    idcg = np.append(np.ones(fit * num_aspects), [penalty ** fit] * extra)
+    idcg /= np.log2(np.arange(k) + 2)
+    idcg = idcg.sum()
+
+    for aspect in aspects:
+        items_from_aspects = p.isin(aspect)
+        if items_from_aspects.any():
+            aspect_positions = pd.Series(np.NaN, index=p.index)
+            aspect_positions[items_from_aspects] = range(items_from_aspects.sum())
+            gain = hits * (penalty ** aspect_positions).fillna(0)
+            discounts = np.log2(np.arange(len(gain)) + 2)
+            dcg += np.sum(gain / discounts)
+    return dcg / idcg
+
+
+def a_ndcg(true, pred, aspects, k=10, alpha=0.5):
+    """Measures redundancy-aware quality and diversity."""
+    return user_mean_sub(_a_ndcg, true, pred, aspects, k, alpha)
 
 
 def _hitrate(data):

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from rs_metrics.metrics import _dcg_score
+from rs_metrics.metrics import _dcg_score, a_ndcg
 from rs_metrics import *
 from rs_metrics.statistics import item_pop
 
@@ -11,6 +11,7 @@ from rs_metrics.statistics import item_pop
 def inner_dict():
     def func(pred, true):
         return {'pred': pred, 'true': true}
+
     return func
 
 
@@ -30,6 +31,22 @@ def test_ndcg():
     y_true = {1: [1, 2], 2: [1, 2]}
     y_pred = {1: [1, 2], 2: [0, 0]}
     assert ndcg(y_true, y_pred, 2) == 0.5
+
+
+def test_a_ndcg_one_user():
+    y_true = {1: [1, 2, 3]}
+    y_pred = {1: [1, 2, 3]}
+    sp = {1: [{1}, {2}, {3}]}
+    assert a_ndcg(y_true, y_pred, sp, 3) == 1
+
+
+def test_a_ndcg():
+    y_true = {1: [1, 2, 3], 2: [1, 2, 3]}
+    y_pred = {1: [1, 2, 3], 2: [0, 0, 0]}
+    sp = {1: [{1, 2}, {3}], 2: [{1, 2, 3}]}
+    u1_score = (1 + 0.4/np.log2(3) + 1/np.log2(4)) / (1 + 1/np.log2(3) + 0.4/np.log2(4))
+    answer = (u1_score + 0) / 2
+    assert a_ndcg(y_true, y_pred, sp, 3, 0.6) == answer
 
 
 def test_hitrate():
@@ -76,7 +93,7 @@ def test_coverage():
 
 @pytest.fixture
 def log():
-    return pd.DataFrame({'user_id':[1, 1, 2], 'item_id': [1, 2, 2]})
+    return pd.DataFrame({'user_id': [1, 1, 2], 'item_id': [1, 2, 2]})
 
 
 def test_item_pop(log):
@@ -90,6 +107,6 @@ def test_popularity(log):
 
 
 def test_surprisal():
-    df = pd.DataFrame({'user_id':[1, 2], 'item_id': [1, 2]})
+    df = pd.DataFrame({'user_id': [1, 2], 'item_id': [1, 2]})
     pred = {1: [2], 2: [1]}
     assert surprisal(df, pred, 2) == 1
