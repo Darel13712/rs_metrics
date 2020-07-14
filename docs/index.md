@@ -2,6 +2,8 @@
 
 This package implements metrics common in recommendation systems.
 
+All metrics are paralleled by users.
+
 ## Installation
 
 ```bash

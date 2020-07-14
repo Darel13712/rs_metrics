@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from rs_metrics.metrics import _dcg_score, a_ndcg
+from rs_metrics.metrics import _dcg_score
 from rs_metrics import *
 from rs_metrics.statistics import item_pop
 
