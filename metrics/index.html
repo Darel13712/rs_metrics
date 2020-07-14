@@ -348,6 +348,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#diversity" class="md-nav__link">
+    Diversity
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-ndcg" class="md-nav__link">
+    α-NDCG
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#other" class="md-nav__link">
     Other
   </a>
@@ -478,6 +498,26 @@
           <li class="md-nav__item">
   <a href="#mrr" class="md-nav__link">
     MRR
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diversity" class="md-nav__link">
+    Diversity
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-ndcg" class="md-nav__link">
+    α-NDCG
   </a>
   
 </li>
@@ -665,6 +705,46 @@ simple binary variant is usually used:</p>
 <h3 id="mrr">MRR</h3>
 <p><code class="codehilite"><span class="k">def</span> <span class="nf">mrr</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span></code></p>
 <p>Mean Reciprocal Rank shows inverted position of the first relevant item, on average.</p>
+<h2 id="diversity">Diversity</h2>
+<h3 id="-ndcg">α-NDCG</h3>
+<p><code class="codehilite"><span class="k">def</span> <span class="nf">a_ndcg</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">aspects</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span></code></p>
+<ul>
+<li>
+<p><code class="codehilite"><span class="err">aspects</span></code>: 
+    dictionary which maps users to aspect list containing items for each aspect.</p>
+<p>Example: <code class="codehilite"><span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="p">[{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">},</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">}],</span> <span class="mi">2</span><span class="p">:</span> <span class="p">[{</span><span class="mi">1</span><span class="p">}]}</span></code></p>
+</li>
+<li>
+<p><code class="codehilite"><span class="err">alpha</span></code> <span><span class="MathJax_Preview">\in [0,1]</span><script type="math/tex">\in [0,1]</script></span>:
+   controls redundancy penalty. 
+   The bigger the number the more metric penalizes items from the same aspect.</p>
+</li>
+</ul>
+<p><span><span class="MathJax_Preview">α\text{-}NDCG</span><script type="math/tex">α\text{-}NDCG</script></span> is based on <span><span class="MathJax_Preview">NDCG</span><script type="math/tex">NDCG</script></span> but it is aspect and redundancy-aware, 
+which makes it a measure of diversity:</p>
+<div>
+<div class="MathJax_Preview">
+    \alpha \text{-}DCG@k=\sum_{i=1}^k \frac{1}{log_2(i + 1)}
+    \sum_{a \in \mathcal{A}} rel(i|a) \prod_{j &lt; i}(1-\alpha rel(j|a))
+</div>
+<script type="math/tex; mode=display">
+    \alpha \text{-}DCG@k=\sum_{i=1}^k \frac{1}{log_2(i + 1)}
+    \sum_{a \in \mathcal{A}} rel(i|a) \prod_{j < i}(1-\alpha rel(j|a))
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+    \alpha \text{-}NDCG@k = \frac{\alpha \text{-}DCG@k} {\alpha \text{-}IDCG@k}
+</div>
+<script type="math/tex; mode=display">
+    \alpha \text{-}NDCG@k = \frac{\alpha \text{-}DCG@k} {\alpha \text{-}IDCG@k}
+</script>
+</div>
+<ul>
+<li><span><span class="MathJax_Preview">a \in A</span><script type="math/tex">a \in A</script></span> are aspects of items i.e. features or subprofiles</li>
+<li><span><span class="MathJax_Preview">rel(i|a)</span><script type="math/tex">rel(i|a)</script></span> equals 1 if item at position <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span> is relevant and has aspect <span><span class="MathJax_Preview">a</span><script type="math/tex">a</script></span> and 0 otherwise</li>
+<li><span><span class="MathJax_Preview">\alpha \text{-}IDCG@k = \max(\alpha \text{-}DCG@k)</span><script type="math/tex">\alpha \text{-}IDCG@k = \max(\alpha \text{-}DCG@k)</script></span></li>
+</ul>
 <h2 id="other">Other</h2>
 <h3 id="coverage">Coverage</h3>
 <p>Shows what percentage of items from log appears in recommendations.</p>
