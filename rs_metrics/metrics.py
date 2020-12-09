@@ -7,8 +7,8 @@ from rs_metrics.statistics import item_pop
 
 
 def _ndcg_score(data):
-    k = len(data['true'])
-    gain = pd.Series(data['pred']).isin(data['true']).astype(int)
+    k = min(len(data['pred']), len(data['true']))
+    gain = pd.Series(data['pred'], dtype=object).isin(data['true']).astype(int)
     discounts = np.log2(np.arange(len(gain)) + 2)
     dcg = np.sum(gain / discounts)
     idcg = np.sum(np.ones(k) / np.log2(np.arange(k) + 2))
@@ -21,7 +21,7 @@ def ndcg(true, pred, k=10):
 
 
 def _a_ndcg(true, pred, aspects, alpha):
-    p = pd.Series(pred)
+    p = pd.Series(pred, dtype=object)
     penalty = 1 - alpha
     dcg = 0
     hits = p.isin(true).astype(int)
@@ -37,7 +37,7 @@ def _a_ndcg(true, pred, aspects, alpha):
     for aspect in aspects:
         items_from_aspects = p.isin(aspect)
         if items_from_aspects.any():
-            aspect_positions = pd.Series(np.NaN, index=p.index)
+            aspect_positions = pd.Series(np.NaN, index=p.index, dtype=float)
             aspect_positions[items_from_aspects] = range(items_from_aspects.sum())
             gain = hits * (penalty ** aspect_positions).fillna(0)
             discounts = np.log2(np.arange(len(gain)) + 2)
@@ -51,7 +51,7 @@ def a_ndcg(true, pred, aspects, k=10, alpha=0.5):
 
 
 def _hitrate(data):
-    pred = pd.Series(data['pred'])
+    pred = pd.Series(data['pred'], dtype=object)
     true = np.array(data['true'])
     return int(pred.isin(true).any())
 
@@ -67,7 +67,7 @@ def precision(true, pred, k=10):
 
 
 def _precision(data):
-    pred = pd.Series(data['pred'])
+    pred = pd.Series(data['pred'], dtype=object)
     return pred.isin(data['true']).mean()
 
 
@@ -77,12 +77,12 @@ def recall(true, pred, k=10):
 
 
 def _recall(data):
-    true = pd.Series(data['true'])
+    true = pd.Series(data['true'], dtype=object)
     return true.isin(data['pred']).mean()
 
 
 def _mrr(data):
-    pred = pd.Series(data['pred'])
+    pred = pd.Series(data['pred'], dtype=object)
     entries = pred.isin(data['true'])
     if entries.any():
         return 1 / (entries.argmax() + 1)
@@ -96,8 +96,8 @@ def mrr(true, pred, k=10):
 
 
 def _map(data):
-    true = pd.Series(data['true'])
-    pred = pd.Series(data['pred'])
+    true = pd.Series(data['true'], dtype=object)
+    pred = pd.Series(data['pred'], dtype=object)
     rel = pred.isin(true)
     return (rel.cumsum() / np.arange(1, len(pred) + 1) * rel).mean()
 
@@ -107,8 +107,8 @@ def mapr(true, pred, k=10):
 
 
 def _mar(data):
-    true = pd.Series(data['true'])
-    pred = pd.Series(data['pred'])
+    true = pd.Series(data['true'], dtype=object)
+    pred = pd.Series(data['pred'], dtype=object)
     rel = pred.isin(true)
     return (rel.cumsum() / len(true) * rel).mean()
 
@@ -128,7 +128,7 @@ def coverage(items, recs, k=None):
     Returns: float
     """
     topk = set(flatten_list(top_k(recs, k).values()))
-    return pd.Series(items).isin(topk).mean()
+    return pd.Series(items, dtype=object).isin(topk).mean()
 
 
 def _popularity(df, pred, fill):
