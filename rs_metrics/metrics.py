@@ -6,17 +6,18 @@ from rs_metrics.parallel import user_mean, top_k, user_apply, user_mean_sub
 from rs_metrics.statistics import item_pop
 
 
-def _dcg_score(data):
+def _ndcg_score(data):
+    k = len(data['true'])
     gain = pd.Series(data['pred']).isin(data['true']).astype(int)
     discounts = np.log2(np.arange(len(gain)) + 2)
-    return np.sum(gain / discounts)
+    dcg = np.sum(gain / discounts)
+    idcg = np.sum(np.ones(k) / np.log2(np.arange(k) + 2))
+    return dcg / idcg
 
 
 def ndcg(true, pred, k=10):
     """Measures ranking quality"""
-    score = user_mean(_dcg_score, true, pred, k)
-    idcg = np.sum(np.ones(k) / np.log2(np.arange(k) + 2))
-    return score / idcg
+    return user_mean(_ndcg_score, true, pred, k)
 
 
 def _a_ndcg(true, pred, aspects, alpha):
