@@ -3,16 +3,11 @@ import numpy as np
 
 
 def user_mean(func, true, pred, k):
-    y = {
-        user:
-            {
-                'true': true[user],
-                'pred': pred.get(user, list())[:k]
-            }
-        for user in true
-    }
     with Pool(cpu_count()) as p:
-        return np.mean(p.map(func, [data for user, data in y.items()]))
+        return np.mean(
+            p.starmap(func, [(true[user], pred.get(user, list())[:k]) for user in true])
+        )
+
 
 
 def user_mean_sub(func, true, pred, subprofiles, k, aplha):
@@ -22,7 +17,7 @@ def user_mean_sub(func, true, pred, subprofiles, k, aplha):
             p.starmap(
                 func,
                 [
-                    (true[user], pred.get(user, list())[:k], subprofiles[user], aplha)
+                    (true[user], pred.get(user, list()), subprofiles[user], aplha)
                     for user in true
                 ],
             )

@@ -4,7 +4,7 @@
 
 ### HitRate
 
-`#!py def hitrate(true, pred, k=10):`
+`#!py def hitrate(true, pred, k=10, user_col='user_id', item_col='item_id'):`
 
 Shows what percentage of users has at least one relevant recommendation in their list.
 
@@ -18,7 +18,7 @@ $$
 
 ### Precision
 
-`#!py def precision(true, pred, k=10):`
+`#!py def precision(true, pred, k=10, user_col='user_id', item_col='item_id'):`
 
 Shows what percentage of items in recommendations are relevant, on average.
 
@@ -31,7 +31,7 @@ $$
 
 ### Mean Average Precision
 
-`#!py def mapr(true, pred, k=10):`
+`#!py def mapr(true, pred, k=10, user_col='user_id', item_col='item_id'):`
 
 $$
 AP@k(u) = \frac{1}{k} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
@@ -47,7 +47,7 @@ $$
 
 ### Recall
 
-`#!py def recall(true, pred, k=10):`
+`#!py def recall(true, pred, k=10, user_col='user_id', item_col='item_id'):`
 
 Shows what percentage of relevant items appeared in recommendations, on average.
 
@@ -60,7 +60,7 @@ $$
 
 ### Mean Average Recall
 
-`#!py def mar(true, pred, k=10):`
+`#!py def mar(true, pred, k=10, user_col='user_id', item_col='item_id'):`
 
 $$
 AR@k(u) = \frac{1}{k} \sum_{i \in rec_u} rel(i, u)Recall@pos_{i, u}(u)
@@ -77,7 +77,7 @@ $$
 ## Ranking
  
 ### NDCG
-`#!py def ndcg(true, pred, k=10):`
+`#!py def ndcg(true, pred, k=10, user_col='user_id', item_col='item_id'):`
 
 Normalized discounted cumulative gain is a ranking quality metric. 
 It takes position of relevant items into account, 
@@ -102,7 +102,7 @@ This value is averaged across all users.
 
 ### MRR
 
-`#!py def mrr(true, pred, k=10):`
+`#!py def mrr(true, pred, k=10, user_col='user_id', item_col='item_id'):`
 
 Mean Reciprocal Rank shows inverted position of the first relevant item, on average.
 
@@ -110,7 +110,7 @@ Mean Reciprocal Rank shows inverted position of the first relevant item, on aver
 
 ### α-NDCG
 
-`#!py def a_ndcg(true, pred, aspects, k=10, alpha=0.5):`
+`#!py def a_ndcg(true, pred, aspects, k=10, alpha=0.5, user_col='user_id', item_col='item_id'):`
 
 - `aspects`: 
     dictionary which maps users to aspect list containing items for each aspect.
@@ -147,7 +147,7 @@ $$
 
 Shows what percentage of items from log appears in recommendations.
 
-`#!py def coverage(items, recs, k=None):`
+`#!py def coverage(items, recs, k=None, user_col='user_id', item_col='item_id'):`
 
 - `items`:
     list of unique item ids.
@@ -155,7 +155,7 @@ Shows what percentage of items from log appears in recommendations.
     If recommendations contain new items, not from `items`, metric won't be correct.
     
 - `recs`:
-    standard user-items dictionary
+    standard user-items dictionary or DataFrame
     
 - `k`:
     pass specific k to limit the amount of visible recommendations for each user.
@@ -173,7 +173,7 @@ Scores for items are averaged per recommendation list and globally.
     pandas DataFrame with interactions
     
 - `pred`: 
-    dict of recommendations
+    dict of recommendations or DataFrame
     
 - `k`: 
     top k items to use from recs
@@ -205,7 +205,7 @@ In a way it is opposite to the popularity metric.
     pandas DataFrame with interactions
     
 - `pred`: 
-    dict of recommendations
+    dict of recommendations or DataFrame
     
 - `k`: 
     top k items to use from recs

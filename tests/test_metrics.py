@@ -7,26 +7,18 @@ from rs_metrics import *
 from rs_metrics.statistics import item_pop
 
 
-@pytest.fixture
-def inner_dict():
-    def func(pred, true):
-        return {'pred': pred, 'true': true}
-
-    return func
+def test_dcg_score_1():
+    assert _ndcg_score([1], [1]) == 1
 
 
-def test_dcg_score_1(inner_dict):
-    assert _ndcg_score(inner_dict([1], [1])) == 1
+def test_dcg_score_0():
+    assert _ndcg_score([1], [0]) == 0
 
 
-def test_dcg_score_0(inner_dict):
-    assert _ndcg_score(inner_dict([1], [0])) == 0
-
-
-def test_dcg_score_half(inner_dict):
+def test_dcg_score_half():
     idcg2 = (1 / np.log2(2) + 1 / np.log2(3))
     dcg = 1 / np.log2(3)
-    assert _ndcg_score(inner_dict([1, 2], [0, 2])) == dcg / idcg2
+    assert _ndcg_score([1, 2], [0, 2]) == dcg / idcg2
 
 
 def test_ndcg_test_less_than_k():
@@ -38,6 +30,14 @@ def test_ndcg():
     y_true = {1: [1, 2], 2: [1, 2]}
     y_pred = {1: [1, 2], 2: [0, 0]}
     assert ndcg(y_true, y_pred, 2) == 0.5
+
+
+def test_ndcg_pandas():
+    y_true = pd.DataFrame([[1, 1], [1, 2]], columns=['user_idx', 'item_id'])
+    y_pred = pd.DataFrame([[1, 1], [1, 0]], columns=['user_idx', 'item_id'])
+    idcg2 = (1 / np.log2(2) + 1 / np.log2(3))
+    dcg = 1 / np.log2(2)
+    assert ndcg(y_true, y_pred, 2, user_col='user_idx') == dcg / idcg2
 
 
 def test_a_ndcg_one_user():
