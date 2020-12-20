@@ -1,3 +1,5 @@
+![PyPI](https://img.shields.io/pypi/v/rs_metrics?color=%2300ccff)
+
 This package implements metrics common in recommendation systems.
 
 ## Installation
