@@ -11,8 +11,8 @@ theme:
   font:
     text: 'Roboto'
     code: 'Menlo'
-  logo:
-    icon: 'assessment'
+  icon:
+    logo: 'material/chart-box'
 
 markdown_extensions:
   - admonition
@@ -24,7 +24,7 @@ markdown_extensions:
 
 extra:
   social:
-    - type: 'github'
+    - icon: 'fontawesome/brands/github'
       link: 'https://github.com/Darel13712/rs_metrics'
 
 extra_javascript:
