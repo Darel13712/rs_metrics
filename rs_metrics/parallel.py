@@ -5,7 +5,7 @@ import numpy as np
 def user_mean(func, true, pred, k):
     with Pool(cpu_count()) as p:
         return np.mean(
-            p.starmap(func, [(true[user], pred.get(user, list())[:k]) for user in true])
+            p.starmap(func, [(true[user], pred.get(user, list())[:k], k) for user in true])
         )
 
 

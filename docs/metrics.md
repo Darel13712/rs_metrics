@@ -34,7 +34,7 @@ $$
 `#!py def mapr(true, pred, k=10, user_col='user_id', item_col='item_id'):`
 
 $$
-AP@k(u) = \frac{1}{k} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
+AP@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
 $$
 
 $$
@@ -63,7 +63,7 @@ $$
 `#!py def mar(true, pred, k=10, user_col='user_id', item_col='item_id'):`
 
 $$
-AR@k(u) = \frac{1}{k} \sum_{i \in rec_u} rel(i, u)Recall@pos_{i, u}(u)
+AR@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Recall@pos_{i, u}(u)
 $$
 
 $$

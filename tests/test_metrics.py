@@ -8,17 +8,17 @@ from rs_metrics.statistics import item_pop
 
 
 def test_dcg_score_1():
-    assert _ndcg_score([1], [1]) == 1
+    assert _ndcg_score([1], [1], 1) == 1
 
 
 def test_dcg_score_0():
-    assert _ndcg_score([1], [0]) == 0
+    assert _ndcg_score([1], [0], 1) == 0
 
 
 def test_dcg_score_half():
     idcg2 = (1 / np.log2(2) + 1 / np.log2(3))
     dcg = 1 / np.log2(3)
-    assert _ndcg_score([1, 2], [0, 2]) == dcg / idcg2
+    assert _ndcg_score([1, 2], [0, 2], 2) == dcg / idcg2
 
 
 def test_ndcg_test_less_than_k():
@@ -83,7 +83,7 @@ def test_mrr():
 def test_map():
     y_true = {1: [1, 2], 2: [1, 2]}
     y_pred = {1: [1, 3], 2: [0, 1]}
-    assert mapr(y_true, y_pred, 2) == 0.375
+    assert mapr(y_true, y_pred, 2) == 0.75
 
 
 def test_mar():

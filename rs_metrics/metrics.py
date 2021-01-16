@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 import numpy as np
 import pandas as pd
 
@@ -11,13 +13,19 @@ def ndcg(true, pred, k=10):
     """Measures ranking quality"""
     return user_mean(_ndcg_score, true, pred, k)
 
-def _ndcg_score(true, pred):
-    k = min(len(true), len(pred))
-    gain = pd.Series(pred, dtype=object).isin(true).astype(int)
-    discounts = np.log2(np.arange(len(gain)) + 2)
-    dcg = np.sum(gain / discounts)
-    idcg = np.sum(np.ones(k) / np.log2(np.arange(k) + 2))
-    return dcg / idcg
+def _ndcg_score(true, pred, k):
+    true = set(true)
+    gain = [item in true for item in pred]
+    dcg = np.sum(gain / _discounts(len(gain)))
+    return dcg / _idcg(min(len(true), k))
+
+@lru_cache(maxsize=128)
+def _discounts(k):
+    return np.log2(np.arange(k) + 2)
+
+@lru_cache(maxsize=128)
+def _idcg(k):
+    return np.sum(np.ones(k) / np.log2(np.arange(k) + 2))
 
 @convert_pandas
 def hitrate(true, pred, k=10):
@@ -25,10 +33,8 @@ def hitrate(true, pred, k=10):
     return user_mean(_hitrate, true, pred, k)
 
 
-def _hitrate(true, pred):
-    pred = pd.Series(pred, dtype=object)
-    true = np.array(true)
-    return int(pred.isin(true).any())
+def _hitrate(true, pred, k):
+    return int(np.isin(pred, true).any())
 
 
 @convert_pandas
@@ -37,9 +43,8 @@ def precision(true, pred, k=10):
     return user_mean(_precision, true, pred, k)
 
 
-def _precision(true, pred):
-    pred = pd.Series(pred, dtype=object)
-    return pred.isin(true).mean()
+def _precision(true, pred, k):
+    return np.isin(pred, true).mean()
 
 
 @convert_pandas
@@ -48,9 +53,8 @@ def recall(true, pred, k=10):
     return user_mean(_recall, true, pred, k)
 
 
-def _recall(true, pred):
-    true = pd.Series(true, dtype=object)
-    return true.isin(pred).mean()
+def _recall(true, pred, k):
+    return np.isin(true, pred).mean()
 
 
 @convert_pandas
@@ -59,9 +63,8 @@ def mrr(true, pred, k=10):
     return user_mean(_mrr, true, pred, k)
 
 
-def _mrr(true, pred):
-    pred = pd.Series(pred, dtype=object)
-    entries = pred.isin(true)
+def _mrr(true, pred, k):
+    entries = np.isin(pred, true)
     if entries.any():
         return 1 / (entries.argmax() + 1)
     else:
@@ -73,11 +76,9 @@ def mapr(true, pred, k=10):
     return user_mean(_map, true, pred, k)
 
 
-def _map(true, pred):
-    true = pd.Series(true, dtype=object)
-    pred = pd.Series(pred, dtype=object)
-    rel = pred.isin(true)
-    return (rel.cumsum() / np.arange(1, len(pred) + 1) * rel).mean()
+def _map(true, pred, k):
+    rel = np.isin(pred, true)
+    return (rel.cumsum() / np.arange(1, len(pred) + 1) * rel).sum() / rel.sum()
 
 
 @convert_pandas
@@ -85,11 +86,9 @@ def mar(true, pred, k=10):
     return user_mean(_mar, true, pred, k)
 
 
-def _mar(true, pred):
-    true = pd.Series(true, dtype=object)
-    pred = pd.Series(pred, dtype=object)
-    rel = pred.isin(true)
-    return (rel.cumsum() / len(true) * rel).mean()
+def _mar(true, pred, k):
+    rel = np.isin(pred, true)
+    return (rel.cumsum() / len(true) * rel).sum() / rel.sum()
 
 
 def coverage(items, recs, k=None, user_col='user_id', item_col='item_id'):
@@ -104,8 +103,8 @@ def coverage(items, recs, k=None, user_col='user_id', item_col='item_id'):
     """
     if type(recs) is pd.DataFrame:
         recs = pandas_to_dict(recs, user_col, item_col)
-    topk = set(flatten_list(top_k(recs, k).values()))
-    return pd.Series(items, dtype=object).isin(topk).mean()
+    topk = list(set(flatten_list(top_k(recs, k).values())))
+    return np.isin(items, topk).mean()
 
 
 def _popularity(df, pred, fill):
