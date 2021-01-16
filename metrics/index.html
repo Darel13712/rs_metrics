@@ -574,10 +574,10 @@ Precision@k = \frac{1}{|U|} \sum_{u \in U} \frac{|rel_u \cap rec_u|}{|rec_u|}
 <p><code class="highlight"><span class="k">def</span> <span class="nf">mapr</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">user_col</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">item_col</span><span class="o">=</span><span class="s1">&#39;item_id&#39;</span><span class="p">):</span></code></p>
 <div>
 <div class="MathJax_Preview">
-AP@k(u) = \frac{1}{k} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
+AP@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
 </div>
 <script type="math/tex; mode=display">
-AP@k(u) = \frac{1}{k} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
+AP@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
 </script>
 </div>
 <div>
@@ -612,10 +612,10 @@ Recall@k = \frac{1}{|U|} \sum_{u \in U} \frac{|rel_u \cap rec_u|}{|rel_u|}
 <p><code class="highlight"><span class="k">def</span> <span class="nf">mar</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">user_col</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">item_col</span><span class="o">=</span><span class="s1">&#39;item_id&#39;</span><span class="p">):</span></code></p>
 <div>
 <div class="MathJax_Preview">
-AR@k(u) = \frac{1}{k} \sum_{i \in rec_u} rel(i, u)Recall@pos_{i, u}(u)
+AR@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Recall@pos_{i, u}(u)
 </div>
 <script type="math/tex; mode=display">
-AR@k(u) = \frac{1}{k} \sum_{i \in rec_u} rel(i, u)Recall@pos_{i, u}(u)
+AR@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Recall@pos_{i, u}(u)
 </script>
 </div>
 <div>
