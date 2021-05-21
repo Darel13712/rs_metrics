@@ -78,7 +78,10 @@ def mapr(true, pred, k=10):
 
 def _map(true, pred, k):
     rel = np.isin(pred, true)
-    return (rel.cumsum() / np.arange(1, len(pred) + 1) * rel).sum() / rel.sum()
+    if rel.any():
+        return (rel.cumsum() / np.arange(1, len(pred) + 1) * rel).sum() / rel.sum()
+    else:
+        return 0.0
 
 
 @convert_pandas
@@ -88,7 +91,10 @@ def mar(true, pred, k=10):
 
 def _mar(true, pred, k):
     rel = np.isin(pred, true)
-    return (rel.cumsum() / len(true) * rel).sum() / rel.sum()
+    if rel.any():
+        return (rel.cumsum() / len(true) * rel).sum() / rel.sum()
+    else:
+        return 0.0
 
 
 def coverage(items, recs, k=None, user_col='user_id', item_col='item_id'):
