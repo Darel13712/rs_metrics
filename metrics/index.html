@@ -269,13 +269,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#mean-average-recall" class="md-nav__link">
-    Mean Average Recall
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -428,13 +421,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#mean-average-recall" class="md-nav__link">
-    Mean Average Recall
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -574,10 +560,10 @@ Precision@k = \frac{1}{|U|} \sum_{u \in U} \frac{|rel_u \cap rec_u|}{|rec_u|}
 <p><code class="highlight"><span class="k">def</span> <span class="nf">mapr</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">user_col</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">item_col</span><span class="o">=</span><span class="s1">&#39;item_id&#39;</span><span class="p">):</span></code></p>
 <div>
 <div class="MathJax_Preview">
-AP@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
+AP@k(u) = \frac{1}{|rel_u|} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
 </div>
 <script type="math/tex; mode=display">
-AP@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
+AP@k(u) = \frac{1}{|rel_u|} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
 </script>
 </div>
 <div>
@@ -590,6 +576,7 @@ MAP@k = \frac{1}{|U|} \sum_{u \in U} AP@k(u)
 </div>
 <ul>
 <li><span><span class="MathJax_Preview">rel(i, u)</span><script type="math/tex">rel(i, u)</script></span> – equals 1 if item <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span> is relevant to user <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span></li>
+<li><span><span class="MathJax_Preview">rel_u</span><script type="math/tex">rel_u</script></span> – items relevant for user <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span></li>
 <li><span><span class="MathJax_Preview">rec_u</span><script type="math/tex">rec_u</script></span> – top-k recommendations for user <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span></li>
 <li><span><span class="MathJax_Preview">pos_{i, u}</span><script type="math/tex">pos_{i, u}</script></span> – position of item <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span> in recommendation list <span><span class="MathJax_Preview">rec_u</span><script type="math/tex">rec_u</script></span></li>
 </ul>
@@ -607,29 +594,6 @@ Recall@k = \frac{1}{|U|} \sum_{u \in U} \frac{|rel_u \cap rec_u|}{|rel_u|}
 <ul>
 <li><span><span class="MathJax_Preview">rel_u</span><script type="math/tex">rel_u</script></span> – items relevant for user <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span></li>
 <li><span><span class="MathJax_Preview">rec_u</span><script type="math/tex">rec_u</script></span> – top-k items recommended to user <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span></li>
-</ul>
-<h3 id="mean-average-recall">Mean Average Recall</h3>
-<p><code class="highlight"><span class="k">def</span> <span class="nf">mar</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">user_col</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">item_col</span><span class="o">=</span><span class="s1">&#39;item_id&#39;</span><span class="p">):</span></code></p>
-<div>
-<div class="MathJax_Preview">
-AR@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Recall@pos_{i, u}(u)
-</div>
-<script type="math/tex; mode=display">
-AR@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Recall@pos_{i, u}(u)
-</script>
-</div>
-<div>
-<div class="MathJax_Preview">
-MAR@k = \frac{1}{|U|} \sum_{u \in U} AR@k(u)
-</div>
-<script type="math/tex; mode=display">
-MAR@k = \frac{1}{|U|} \sum_{u \in U} AR@k(u)
-</script>
-</div>
-<ul>
-<li><span><span class="MathJax_Preview">rel(i, u)</span><script type="math/tex">rel(i, u)</script></span> – equals 1 if item <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span> is relevant to user <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span></li>
-<li><span><span class="MathJax_Preview">rec_u</span><script type="math/tex">rec_u</script></span> – top-k recommendations for user <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span></li>
-<li><span><span class="MathJax_Preview">pos_{i, u}</span><script type="math/tex">pos_{i, u}</script></span> – position of item <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span> in recommendation list <span><span class="MathJax_Preview">rec_u</span><script type="math/tex">rec_u</script></span></li>
 </ul>
 <h2 id="ranking">Ranking</h2>
 <h3 id="ndcg">NDCG</h3>
