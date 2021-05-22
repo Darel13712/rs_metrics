@@ -34,7 +34,7 @@ $$
 `#!py def mapr(true, pred, k=10, user_col='user_id', item_col='item_id'):`
 
 $$
-AP@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
+AP@k(u) = \frac{1}{|rel_u|} \sum_{i \in rec_u} rel(i, u)Precision@pos_{i, u}(u)
 $$
 
 $$
@@ -42,6 +42,7 @@ MAP@k = \frac{1}{|U|} \sum_{u \in U} AP@k(u)
 $$
 
 - $rel(i, u)$ – equals 1 if item $i$ is relevant to user $u$
+- $rel_u$ – items relevant for user $u$
 - $rec_u$ – top-k recommendations for user $u$
 - $pos_{i, u}$ – position of item $i$ in recommendation list $rec_u$
 
@@ -57,22 +58,6 @@ $$
 
 - $rel_u$ – items relevant for user $u$
 - $rec_u$ – top-k items recommended to user $u$
-
-### Mean Average Recall
-
-`#!py def mar(true, pred, k=10, user_col='user_id', item_col='item_id'):`
-
-$$
-AR@k(u) = \frac{1}{\sum_{i \in rec_u} rel(i, u)} \sum_{i \in rec_u} rel(i, u)Recall@pos_{i, u}(u)
-$$
-
-$$
-MAR@k = \frac{1}{|U|} \sum_{u \in U} AR@k(u)
-$$
-
-- $rel(i, u)$ – equals 1 if item $i$ is relevant to user $u$
-- $rec_u$ – top-k recommendations for user $u$
-- $pos_{i, u}$ – position of item $i$ in recommendation list $rec_u$
 
 ## Ranking
  

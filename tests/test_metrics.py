@@ -83,13 +83,7 @@ def test_mrr():
 def test_map():
     y_true = {1: [1, 2], 2: [1, 2]}
     y_pred = {1: [1, 3], 2: [0, 1]}
-    assert mapr(y_true, y_pred, 2) == 0.75
-
-
-def test_mar():
-    y_true = {1: [1, 2], 2: [1, 2]}
-    y_pred = {1: [1, 3], 2: [0, 1]}
-    assert mar(y_true, y_pred, 2) == 0.25
+    assert mapr(y_true, y_pred, 2) == 0.375
 
 
 def test_coverage():

@@ -78,21 +78,8 @@ def mapr(true, pred, k=10):
 
 def _map(true, pred, k):
     rel = np.isin(pred, true)
-    if rel.any():
-        return (rel.cumsum() / np.arange(1, len(pred) + 1) * rel).sum() / rel.sum()
-    else:
-        return 0.0
-
-
-@convert_pandas
-def mar(true, pred, k=10):
-    return user_mean(_mar, true, pred, k)
-
-
-def _mar(true, pred, k):
-    rel = np.isin(pred, true)
-    if rel.any():
-        return (rel.cumsum() / len(true) * rel).sum() / rel.sum()
+    if len(true) > 0:
+        return (rel.cumsum() / np.arange(1, len(pred) + 1) * rel).sum() / len(true)
     else:
         return 0.0
 

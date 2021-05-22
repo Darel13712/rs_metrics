@@ -4,7 +4,6 @@ from rs_metrics.metrics import (
     recall,
     ndcg,
     mapr,
-    mar,
     mrr,
     coverage,
     popularity,
