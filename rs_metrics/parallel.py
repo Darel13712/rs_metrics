@@ -2,11 +2,9 @@ from multiprocessing import Pool, cpu_count
 import numpy as np
 
 
-def user_mean(func, true, pred, k):
+def user_parallel(func, true, pred, k):
     with Pool(cpu_count()) as p:
-        return np.mean(
-            p.starmap(func, [(true[user], pred.get(user, list())[:k], k) for user in true])
-        )
+        return p.starmap(func, [(true[user], pred.get(user, list())[:k], k) for user in true])
 
 
 

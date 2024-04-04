@@ -4,14 +4,16 @@ import numpy as np
 import pandas as pd
 
 from rs_metrics.helpers import flatten_list, pandas_to_dict, convert_pandas
-from rs_metrics.parallel import user_mean, top_k, user_apply, user_mean_sub
+from rs_metrics.parallel import user_parallel, top_k, user_apply, user_mean_sub
 from rs_metrics.statistics import item_pop
 
 
 @convert_pandas
-def ndcg(true, pred, k=10):
+def ndcg(true, pred, k=10, apply_mean=True):
     """Measures ranking quality"""
-    return user_mean(_ndcg_score, true, pred, k)
+    res = user_parallel(_ndcg_score, true, pred, k)
+    res = np.mean(res) if apply_mean else res
+    return res
 
 def _ndcg_score(true, pred, k):
     true = set(true)
@@ -28,9 +30,11 @@ def _idcg(k):
     return np.sum(np.ones(k) / np.log2(np.arange(k) + 2))
 
 @convert_pandas
-def hitrate(true, pred, k=10):
+def hitrate(true, pred, k=10, apply_mean=True):
     """Shows what percentage of users has at least one relevant recommendation in their list."""
-    return user_mean(_hitrate, true, pred, k)
+    res = user_parallel(_hitrate, true, pred, k)
+    res = np.mean(res) if apply_mean else res
+    return res
 
 
 def _hitrate(true, pred, k):
@@ -38,9 +42,12 @@ def _hitrate(true, pred, k):
 
 
 @convert_pandas
-def precision(true, pred, k=10):
+def precision(true, pred, k=10, apply_mean=True):
     """Shows what percentage of items in recommendations are relevant, on average."""
-    return user_mean(_precision, true, pred, k)
+    res = user_parallel(_precision, true, pred, k)
+    res = np.mean(res) if apply_mean else res
+    return res
+
 
 
 def _precision(true, pred, k):
@@ -48,9 +55,11 @@ def _precision(true, pred, k):
 
 
 @convert_pandas
-def recall(true, pred, k=10):
+def recall(true, pred, k=10, apply_mean=True):
     """Shows what percentage of relevant items appeared in recommendations, on average."""
-    return user_mean(_recall, true, pred, k)
+    res = user_parallel(_recall, true, pred, k)
+    res = np.mean(res) if apply_mean else res
+    return res
 
 
 def _recall(true, pred, k):
@@ -58,9 +67,11 @@ def _recall(true, pred, k):
 
 
 @convert_pandas
-def mrr(true, pred, k=10):
+def mrr(true, pred, k=10, apply_mean=True):
     """Shows inverted position of the first relevant item, on average."""
-    return user_mean(_mrr, true, pred, k)
+    res = user_parallel(_mrr, true, pred, k)
+    res = np.mean(res) if apply_mean else res
+    return res
 
 
 def _mrr(true, pred, k):
@@ -72,8 +83,10 @@ def _mrr(true, pred, k):
 
 
 @convert_pandas
-def mapr(true, pred, k=10):
-    return user_mean(_map, true, pred, k)
+def mapr(true, pred, k=10, apply_mean=True):
+    res = user_parallel(_map, true, pred, k)
+    res = np.mean(res) if apply_mean else res
+    return res
 
 
 def _map(true, pred, k):

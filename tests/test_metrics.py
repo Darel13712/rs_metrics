@@ -61,6 +61,14 @@ def test_hitrate():
     y_pred = {1: [0, 1], 2: [0, 0]}
     assert hitrate(y_true, y_pred, 2) == 0.5
 
+def test_apply_mean():
+    y_true = {1: [1, 2], 2: [1, 2]}
+    y_pred = {1: [0, 1], 2: [0, 0]}
+    res = hitrate(y_true, y_pred, 2, apply_mean=False)
+    assert len(res) == 2
+    res_averaged = hitrate(y_true, y_pred, 2)
+    assert np.mean(res) == res_averaged
+
 
 def test_precision():
     y_true = {1: [1, 0, 0, 2], 2: [1, 2]}
