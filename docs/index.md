@@ -23,3 +23,5 @@ You can also pass `pandas.DataFrame`, which will be converted `dict` to automati
 `convert_to_pandas` function. 
 
 Default columns are `user_col='user_id', item_col='item_id'`.
+
+By default metrics are calculated for users in a loop, however you can specify the `num_workers` parameter to do in parallel with multiprocessing.
