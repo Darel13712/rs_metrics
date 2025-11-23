@@ -1,3 +1,9 @@
 /venv/
-/.idea/git
+/.idea/
 __pycache__/
+/build/
+/dist/
+/rs_metrics.egg-info/
+/site/
+/test_env/
+

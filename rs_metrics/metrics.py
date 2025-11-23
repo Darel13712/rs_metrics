@@ -3,17 +3,16 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
-from rs_metrics.helpers import flatten_list, pandas_to_dict, convert_pandas
+from rs_metrics.helpers import flatten_list, pandas_to_dict, convert_pandas, maybe_mean
 from rs_metrics.parallel import user_parallel, top_k, user_apply, user_mean_sub
 from rs_metrics.statistics import item_pop
 
 
 @convert_pandas
-def ndcg(true, pred, k=10, apply_mean=True):
+def ndcg(true, pred, k=10, num_workers=1, apply_mean=True):
     """Measures ranking quality"""
-    res = user_parallel(_ndcg_score, true, pred, k)
-    res = np.mean(res) if apply_mean else res
-    return res
+    res = user_parallel(_ndcg_score, true, pred, k, num_workers)
+    return maybe_mean(res, apply_mean)
 
 def _ndcg_score(true, pred, k):
     true = set(true)
@@ -30,11 +29,10 @@ def _idcg(k):
     return np.sum(np.ones(k) / np.log2(np.arange(k) + 2))
 
 @convert_pandas
-def hitrate(true, pred, k=10, apply_mean=True):
+def hitrate(true, pred, k=10, num_workers=1, apply_mean=True):
     """Shows what percentage of users has at least one relevant recommendation in their list."""
-    res = user_parallel(_hitrate, true, pred, k)
-    res = np.mean(res) if apply_mean else res
-    return res
+    res = user_parallel(_hitrate, true, pred, k, num_workers)
+    return maybe_mean(res, apply_mean)
 
 
 def _hitrate(true, pred, k):
@@ -42,11 +40,10 @@ def _hitrate(true, pred, k):
 
 
 @convert_pandas
-def precision(true, pred, k=10, apply_mean=True):
+def precision(true, pred, k=10, num_workers=1, apply_mean=True):
     """Shows what percentage of items in recommendations are relevant, on average."""
-    res = user_parallel(_precision, true, pred, k)
-    res = np.mean(res) if apply_mean else res
-    return res
+    res = user_parallel(_precision, true, pred, k, num_workers)
+    return maybe_mean(res, apply_mean)
 
 
 
@@ -55,11 +52,10 @@ def _precision(true, pred, k):
 
 
 @convert_pandas
-def recall(true, pred, k=10, apply_mean=True):
+def recall(true, pred, k=10, num_workers=1, apply_mean=True):
     """Shows what percentage of relevant items appeared in recommendations, on average."""
-    res = user_parallel(_recall, true, pred, k)
-    res = np.mean(res) if apply_mean else res
-    return res
+    res = user_parallel(_recall, true, pred, k, num_workers)
+    return maybe_mean(res, apply_mean)
 
 
 def _recall(true, pred, k):
@@ -67,11 +63,10 @@ def _recall(true, pred, k):
 
 
 @convert_pandas
-def mrr(true, pred, k=10, apply_mean=True):
+def mrr(true, pred, k=10, num_workers=1, apply_mean=True):
     """Shows inverted position of the first relevant item, on average."""
-    res = user_parallel(_mrr, true, pred, k)
-    res = np.mean(res) if apply_mean else res
-    return res
+    res = user_parallel(_mrr, true, pred, k, num_workers)
+    return maybe_mean(res, apply_mean)
 
 
 def _mrr(true, pred, k):
@@ -83,10 +78,9 @@ def _mrr(true, pred, k):
 
 
 @convert_pandas
-def mapr(true, pred, k=10, apply_mean=True):
-    res = user_parallel(_map, true, pred, k)
-    res = np.mean(res) if apply_mean else res
-    return res
+def mapr(true, pred, k=10, num_workers=1, apply_mean=True):
+    res = user_parallel(_map, true, pred, k, num_workers)
+    return maybe_mean(res, apply_mean)
 
 
 def _map(true, pred, k):
@@ -97,7 +91,7 @@ def _map(true, pred, k):
         return 0.0
 
 
-def coverage(items, recs, k=None, user_col='user_id', item_col='item_id'):
+def coverage(items, recs, k=None, num_workers=1, user_col='user_id', item_col='item_id'):
     """What percentage of items appears in recommendations?
 
     Args:
@@ -109,7 +103,7 @@ def coverage(items, recs, k=None, user_col='user_id', item_col='item_id'):
     """
     if type(recs) is pd.DataFrame:
         recs = pandas_to_dict(recs, user_col, item_col)
-    topk = list(set(flatten_list(top_k(recs, k).values())))
+    topk = list(set(flatten_list(top_k(recs, k, num_workers).values())))
     return np.isin(items, topk).mean()
 
 
@@ -117,7 +111,7 @@ def _popularity(df, pred, fill):
     return np.mean([df.get(item, fill) for item in pred])
 
 
-def popularity(log, pred, k=10, user_col='user_id', item_col='item_id'):
+def popularity(log, pred, k=10, num_workers=1, user_col='user_id', item_col='item_id'):
     """
     Mean popularity of recommendations.
 
@@ -132,24 +126,24 @@ def popularity(log, pred, k=10, user_col='user_id', item_col='item_id'):
     if type(pred) is pd.DataFrame:
         pred = pandas_to_dict(pred, user_col, item_col)
     scores = item_pop(log, user_col, item_col)
-    return user_apply(_popularity, scores, pred, k, 0)
+    return user_apply(_popularity, scores, pred, k, 0, num_workers)
 
 
-def surprisal(log, pred, k=10, user_col='user_id', item_col='item_id'):
+def surprisal(log, pred, k=10, num_workers=1, user_col='user_id', item_col='item_id'):
     if type(pred) is pd.DataFrame:
         pred = pandas_to_dict(pred, user_col, item_col)
     scores = -np.log2(item_pop(log, user_col, item_col))
     fill = np.log2(log[user_col].nunique())
-    return user_apply(_popularity, scores, pred, k, fill)
+    return user_apply(_popularity, scores, pred, k, fill, num_workers)
 
 
-def a_ndcg(true, pred, aspects, k=10, alpha=0.5, user_col='user_id', item_col='item_id'):
+def a_ndcg(true, pred, aspects, k=10, alpha=0.5, num_workers=1, user_col='user_id', item_col='item_id'):
     """Measures redundancy-aware quality and diversity."""
     if type(true) is pd.DataFrame:
         true = pandas_to_dict(true, user_col, item_col)
     if type(pred) is pd.DataFrame:
         pred = pandas_to_dict(pred, user_col, item_col)
-    return user_mean_sub(_a_ndcg, true, pred, aspects, k, alpha)
+    return user_mean_sub(_a_ndcg, true, pred, aspects, k, alpha, num_workers)
 
 
 def _a_ndcg(true, pred, aspects, alpha):
